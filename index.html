@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+		<script src="script.js" type="text/javascript"></script>
+		<title>AJAX Script Generator</title>
+	</head>
+	<body>
+		<h1>
+			AJAX Script Generator
+		</h1>
+		<div id="form">
+			<label for="url">Query URL</label>
+			<input type="text" name="url" id="url" /><br>
+			<label for="method">HTTP Method</label>
+			<select id="method" name="method">
+				<option id="GET">GET</option>
+				<option id="PUT">PUT</option>
+				<option id="POST">POST</option>
+				<option id="DELETE">DELETE</option>
+			</select><br>
+			<label for="datatype">Data Type</label>
+			<input type="text" name="datatype" id="datatype" /><br>
+			<label for="data">Data</label>
+			<textarea name="data" id="data"></textarea><br>
+			<label for="rqhd1_key">Request Header 1</label>
+			<input type="text" name="rqhd1_key" id="rqhd1_key" placeholder="key" />
+			<input type="text" name="rqhd1_val" id="rqhd1_val" placeholder="value" /><br>
+			<label for="rqhd2_key">Request Header 2</label>
+			<input type="text" name="rqhd2_key" id="rqhd2_key" placeholder="key" />
+			<input type="text" name="rqhd2_val" id="rqhd2_val" placeholder="value" /><br>
+			<label for="rqhd3_key">Request Header 3</label>
+			<input type="text" name="rqhd3_key" id="rqhd3_key" placeholder="key" />
+			<input type="text" name="rqhd3_val" id="rqhd3_val" placeholder="value" /><br>
+			<label for="success">Success Function (JS)</label>
+			<textarea name="success" id="success"></textarea><br>
+			<label for="error">Error Function (JS)</label>
+			<textarea name="error" id="error"></textarea><br>
+			<input type="submit" value="Generate" id="submit" />
+		</div>
+		<div id="output">
+		</div>
+	</body>
+</html>
