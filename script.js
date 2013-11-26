@@ -2,6 +2,7 @@ console.log = function(m) {
 	$("#errors").append("<span class='error'>"+m+"</span>")
 }
 
+
 getFormObject = function() {
 	return {
 		url: $("#url").val(),
@@ -52,32 +53,13 @@ generateAJAX = function(a) {
 					data: {'+a.data+'},\
 					beforeSend: function(e) {\
 						'+setRequestHeaders(a).js+'\
+						e.onerror = function(e) {console.log(e);alert("!!!")};\
 					},\
 					success: function(e) {\
 						'+a.success+'\
 					},\
 					error: function(e) {\
 						'+a.error+'\
-					}\
-				})\
-			})()\
-		',
-		js: '\
-			(function() {\
-				$.ajax({\
-					url: "'+a.url+'",\
-					dataType: "'+a.dataType+'",\
-					type: "'+a.method+'",\
-					data: {'+a.data+'},\
-					beforeSend: function(e) {\
-						'+setRequestHeaders(a).js+'\
-					},\
-					success: function(e) {\
-						'+a.success+'\
-					},\
-					error: function(e) {\
-						'+a.error+'\
-						$("#errors").append("<span class=\'error\'>"+e+"</span>")
 					}\
 				})\
 			})()\
@@ -107,14 +89,14 @@ ajax = null;
 
 $(document).ready(function() {
 	init = false
-	$("input").click(function() {
+	$("input,textarea").click(function() {
 		if (!init) {
 			$("#output").html(generateAJAX(getFormObject()).html);
 		}
 		init = true
 	})
 
-	$("input").keyup(function(){
+	$("input,textarea").keyup(function(){
 		ajax = generateAJAX(getFormObject());
 		$("#output").html(ajax.html);
 		$("#run").show()
