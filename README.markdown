@@ -1,0 +1,3 @@
+#ajax-generator
+
+A little project I did building a purely frontend JS app that generates AJAX code with the inputs provided...
