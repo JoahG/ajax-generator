@@ -25,55 +25,65 @@ getFormObject = function() {
 
 setRequestHeaders = function(a) {
 	t = ''
+	h = ''
 	for (i in a.request_headers) {
 		j = a.request_headers[i];
-		t += 'e.setRequestHeader("'+j.key+'", "'+j.val+'");'+(j == a.request_headers[a.request_headers.length-1]?'\n':'')
+		t += 'e.setRequestHeader("'+j.key+'", "'+j.val+'");'+(j != a.request_headers[a.request_headers.length-1]?'\n':'')
+		h += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.setRequestHeader("'+j.key+'", "'+j.val+'");'+(j != a.request_headers[a.request_headers.length-1]?'<br>':'')
 	}
-	return t
+	return {
+		js: t,
+		html: h
+	}
 }
 
 generateAJAX = function(a) {
-	return ['\
-		(function() {\n\
-			$.ajax({\
-				url: "'+a.url+'",\
-				dataType: "'+a.dataType+'",\
-				type: "'+a.method+'",\
-				data: '+a.data+',\
-				beforeSend: function(e) {\
-					'+setRequestHeaders(a)+'\
-				},\
-				success: function(e) {\
-					'+a.success+'\
-				},\
-				error: function(e) {\
-					'+a.error+'\
-				}\
+	return {
+		js: '\
+			(function() {\n\
+				$.ajax({\
+					url: "'+a.url+'",\
+					dataType: "'+a.dataType+'",\
+					type: "'+a.method+'",\
+					data: '+a.data+',\
+					beforeSend: function(e) {\
+						'+setRequestHeaders(a).js+'\
+					},\
+					success: function(e) {\
+						'+a.success+'\
+					},\
+					error: function(e) {\
+						'+a.error+'\
+					}\
+				})\
 			})\
-		})\
-	','\
-		(function() {<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;$.ajax({<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "'+a.url+'",<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataType: "'+a.dataType+'",<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: "'+a.method+'",<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: '+a.data+',<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;beforeSend: function(e) {<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+setRequestHeaders(a)+'<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success: function(e) {<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+a.success+'<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error: function(e) {<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+a.error+'<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>\
-		&nbsp;&nbsp;&nbsp;&nbsp;})<br>\
-		})<br>\
-	']
+		',
+		html: '\
+			(function() {<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;$.ajax({<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "'+a.url+'",<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataType: "'+a.dataType+'",<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: "'+a.method+'",<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: '+a.data+',<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;beforeSend: function(e) {<br>'+setRequestHeaders(a).html+'<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success: function(e) {<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+a.success+'<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error: function(e) {<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+a.error+'<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>\
+			&nbsp;&nbsp;&nbsp;&nbsp;})<br>\
+			})<br>\
+		'
+	}
 }
+
+ajax = null;
 
 $(document).ready(function() {
 	$("#submit").click(function(){
-		$("#output").html(generateAJAX(getFormObject())[1])
+		ajax = generateAJAX(getFormObject());
+		$("#output").html(ajax.html);
 	});
 });
