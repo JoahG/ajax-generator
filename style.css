@@ -1,3 +1,22 @@
-#output {
+#output, #errors {
 	font-family: "Monoco", monospace;
+}
+
+#errors {
+	padding: 15px;
+	background-color: black;
+	color: green;
+}
+
+#errors .error {
+	display: block;
+	min-height: 15px;
+}
+
+#errors .error::before {
+	content: '> ';
+}
+
+#run {
+	display:none;
 }

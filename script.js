@@ -1,3 +1,7 @@
+console.log = function(m) {
+	$("#errors").append("<span class='error'>"+m+"</span>")
+}
+
 getFormObject = function() {
 	return {
 		url: $("#url").val(),
@@ -40,12 +44,12 @@ setRequestHeaders = function(a) {
 generateAJAX = function(a) {
 	return {
 		js: '\
-			(function() {\n\
+			(function() {\
 				$.ajax({\
 					url: "'+a.url+'",\
 					dataType: "'+a.dataType+'",\
 					type: "'+a.method+'",\
-					data: '+a.data+',\
+					data: {'+a.data+'},\
 					beforeSend: function(e) {\
 						'+setRequestHeaders(a).js+'\
 					},\
@@ -56,7 +60,27 @@ generateAJAX = function(a) {
 						'+a.error+'\
 					}\
 				})\
-			})\
+			})()\
+		',
+		js: '\
+			(function() {\
+				$.ajax({\
+					url: "'+a.url+'",\
+					dataType: "'+a.dataType+'",\
+					type: "'+a.method+'",\
+					data: {'+a.data+'},\
+					beforeSend: function(e) {\
+						'+setRequestHeaders(a).js+'\
+					},\
+					success: function(e) {\
+						'+a.success+'\
+					},\
+					error: function(e) {\
+						'+a.error+'\
+						$("#errors").append("<span class=\'error\'>"+e+"</span>")
+					}\
+				})\
+			})()\
 		',
 		html: '\
 			(function() {<br>\
@@ -82,8 +106,25 @@ generateAJAX = function(a) {
 ajax = null;
 
 $(document).ready(function() {
-	$("#submit").click(function(){
+	init = false
+	$("input").click(function() {
+		if (!init) {
+			$("#output").html(generateAJAX(getFormObject()).html);
+		}
+		init = true
+	})
+
+	$("input").keyup(function(){
 		ajax = generateAJAX(getFormObject());
 		$("#output").html(ajax.html);
+		$("#run").show()
 	});
+
+	$("#run").click(function() {
+		try {
+			eval(ajax.js);
+		} catch(err) {
+			$("#errors").append("<span class='error'>"+err.message+"</span>")
+		}
+	})
 });
